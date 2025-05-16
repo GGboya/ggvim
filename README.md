@@ -1,16 +1,27 @@
-# PacVim in Go
+# ggvim
 
 使用 vim 指令移动绿色 P 来躲避红色 G 从而练习 vim。
 
 ## 安装
+linux 用户：
+```
+curl -L -o ggvim https://github.com/GGboya/ggvim/releases/download/v1.0.0/ggvim-v1.0.0-linux-amd64
+sudo chmod +x ggvim
+sudo mv ggvim /usr/local/bin/
+```
 
-- 新用户
+macOS 用户
+```
+curl -L -o ggvim https://github.com/GGboya/ggvim/releases/download/v1.0.0/ggvim-v1.0.0-macos
+sudo chmod +x ggvim
+sudo mv ggvim /usr/local/bin/
+```
 
-`go get github.com/GGboya/ggvim`
-
-- 老用户
-
-`go get -u github.com/GGboya/ggvim`
+windows 用户
+```
+curl -L https://github.com/GGboya/ggvim/releases/download/v1.0.0/ggvim.exe
+执行 ggvim.exe
+```
 
 ## 使用
 
