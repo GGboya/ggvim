@@ -5,33 +5,56 @@ import (
 	"strings"
 	"time"
 
-	"github.com/A11Might/PacVim/pkg/game"
-	"github.com/A11Might/PacVim/pkg/util"
+	"github.com/GGboya/ggvim/pkg/game"
+	"github.com/GGboya/ggvim/pkg/util"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/muesli/termenv"
 )
 
 type Model struct {
-	Player *game.Avatar
-	Ghost  *game.Ghost
+	Player     *game.Avatar
+	Ghost      *game.Ghost
+	FirstInput bool
+	Difficulty util.Difficulty
+	lastInput  string
 }
 
 type tickMsg time.Time
 
-func tick() tea.Cmd {
-	return tea.Tick(util.GhostSpeed, func(t time.Time) tea.Msg {
+func tick(d util.Difficulty) tea.Cmd {
+	return tea.Tick(util.DifficultyMap[d], func(t time.Time) tea.Msg {
 		return tickMsg(t)
 	})
 }
 
 func (m Model) Init() tea.Cmd {
-	return tick()
+	return tick(m.Difficulty)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
+		// 用户敲击了键盘，表示游戏开始，此时敌方才移动
+		if !m.FirstInput {
+			m.FirstInput = true
+			return m, tick(m.Difficulty)
+		}
+		key := msg.String()
+		// 特判 gg
+		if m.lastInput == "g" && key == "g" {
+			m.Player.GoToFirstNonBlank() // gg 跳转到第一行非空字符那里
+			m.lastInput = ""
+			return m, nil
+		}
+
+		if key == "g" {
+			m.lastInput = "g"
+			return m, nil
+		} else {
+			m.lastInput = ""
+		}
+
+		switch key {
 		case "k":
 			m.Player.MoveUp()
 
@@ -71,11 +94,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "W":
 			m.Player.ParseWordForwardForW()
 
-		case "g":
-			m.Player.ParseToUpping()
-
 		case "G":
-			m.Player.ParseToDowning()
+			m.Player.GoToLastLineFirstNonBlank()
 
 		case "ctrl+c":
 			return m, tea.Quit
@@ -83,8 +103,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tickMsg:
 		//m.Ghost.Think()
-		m.Ghost.ThinkMore()
-		return m, tick()
+		if m.FirstInput {
+			m.Ghost.ThinkMore()
+			return m, tick(m.Difficulty)
+		}
 	}
 
 	return m, nil

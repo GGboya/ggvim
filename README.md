@@ -6,19 +6,16 @@
 
 - 新用户
 
-`go get github.com/A11Might/PacVim`
+`go get github.com/GGboya/ggvim`
 
 - 老用户
 
-`go get -u github.com/A11Might/PacVim`
+`go get -u github.com/GGboya/ggvim`
 
 ## 使用
 
-键入 `pacvim` 来开始游戏
+键入 `ggvim` 来开始游戏
 
-*可能刚进入游戏就异常啦，可以尝试多试几次*
-
-![typer](assets/PacVim.gif?raw=true)
 
 ## 游玩方法
 
@@ -45,38 +42,11 @@ P 有两个障碍：
 | $   | 移到行尾 |
 | 0   | 移到硬行首 |
 | ^   | 移到软行首 |
-| gg  | 移到第一行 |
-| G   | 移到最后一行 |
+| gg  | 移到第一行第一个非空字符 |
+| G   | 移到最后一行第一个非空字符 |
 | Ctrl C | 退出游戏 |
 
 ## 开发日志
 
-- 20211015 
-  - 地图上的玩家（P）可以动啦
-
-- 20211016 
-  - 地图上的幽灵（G）可以动啦
-  - 新增 h, j, k, l, w, e, b, $, 0, gg, G，注意 0, $, gg, G 可以穿墙
-  - 走过所有字符可以赢得游戏啦
-
-- 20211017 
-  - 重构部分代码，看起来更面向对象
-  - 开始游戏随机 10 张地图中的一张
-  - 新增 Ctrl C 退出游戏
-  - 今天一个人吃海底捞，难过:(
-
-- 20211018
-  - 新增 ^, E, W, B，其中 ^ 可以穿墙 
-  - 显示总分数啦
-
-- 20211020
-  - 使用 [A* 算法](https://github.com/beefsack/go-astar) 替代原来的贪心算法，现在 G 不会给墙角鬼畜啦
-
-- 20211023
-  - 新增 [A* 算法 tutorial](./assets/a-star.md)
-
-## 碎碎恋
-
-参考项目 [PacVim](https://github.com/jmoon018/PacVim)，还没抄完，开发中...
-
-~~发现代码有明显逻辑`bug`，但它就是能正常运行，我:)~~
+- 20250516
+修复 gg, G 的逻辑，增加难度系数，用户可选 easy, mid, hard

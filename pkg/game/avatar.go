@@ -3,7 +3,7 @@ package game
 import (
 	"math/rand"
 
-	"github.com/A11Might/PacVim/pkg/util"
+	"github.com/GGboya/ggvim/pkg/util"
 )
 
 type Avatar struct {
@@ -148,7 +148,7 @@ func (t *Avatar) ParseWordEnd() bool {
 		nextChar = CharAt(t.X, t.Y+1)
 	}
 
-	for true {
+	for {
 		if t.endForSymbol() {
 			t.MoveRight()
 			return true
@@ -167,10 +167,7 @@ func (t *Avatar) ParseWordEnd() bool {
 
 // endForSymbol for case: 从左往右 a. or ,.
 func (t *Avatar) endForSymbol() bool {
-	if !util.IsAlphanumeric(CharAt(t.X, t.Y+1)) {
-		return true
-	}
-	return false
+	return !util.IsAlphanumeric(CharAt(t.X, t.Y+1))
 }
 
 // ParseWordEndForE for E
@@ -212,7 +209,7 @@ func (t *Avatar) ParseWordBackward() bool {
 		nextChar = CharAt(t.X, t.Y-1)
 	}
 
-	for true {
+	for {
 		if t.beginForSymbol() {
 			t.MoveLeft()
 			return true
@@ -230,10 +227,7 @@ func (t *Avatar) ParseWordBackward() bool {
 
 // beginForSymbol for case: 从右往左 .a or .,
 func (t *Avatar) beginForSymbol() bool {
-	if !util.IsAlphanumeric(CharAt(t.X, t.Y-1)) {
-		return true
-	}
-	return false
+	return !util.IsAlphanumeric(CharAt(t.X, t.Y-1))
 }
 
 // ParseWordBackwardForB for B
@@ -263,7 +257,7 @@ func (t *Avatar) ParseWordBackwardForB() bool {
 // ParseWordForward for w
 func (t *Avatar) ParseWordForward() bool {
 	// 向右走
-	for true {
+	for {
 		if CharAt(t.X, t.Y+1) == ' ' {
 			if !t.MoveRight() {
 				return false
@@ -277,7 +271,6 @@ func (t *Avatar) ParseWordForward() bool {
 			}
 		}
 	}
-	return true
 }
 
 func (t *Avatar) endCondition() bool {
@@ -356,44 +349,31 @@ func (t *Avatar) ParseToBeginningFor6() bool {
 	return true
 }
 
-// ParseToUpping for gg
-func (t *Avatar) ParseToUpping() bool {
-	// 同理
-	a, b := 0, t.Y
-	for IsValid(a, b) {
-		a++
+// ParseToDowning for G
+func (t *Avatar) GoToLastLineFirstNonBlank() bool {
+	for i := len(GlobMaze.Graph) - 1; i >= 0; i-- {
+		for _, cell := range GlobMaze.Graph[i] {
+			if cell.Char != '#' && cell.Char != ' ' {
+				t.MoveTo(cell.X, cell.Y)
+				return true
+			}
+		}
 	}
-
-	// for case: #  |
-	//			 #  |
-	//				v
-	//			 #
-	for !IsValid(a, b) {
-		a++
-	}
-
-	t.MoveTo(a, b)
-	return true
+	return false
 }
 
-// ParseToDowning for G
-func (t *Avatar) ParseToDowning() bool {
-	// 同理
-	a, b := GlobMaze.rows-1, t.Y
-	for IsValid(a, b) {
-		a--
+// gg
+func (t *Avatar) GoToFirstNonBlank() bool {
+	// 从头到尾遍历，遇到第一个不是 # 的就跳转
+	for _, rows := range GlobMaze.Graph {
+		for _, cell := range rows {
+			if cell.Char != '#' && cell.Char != ' ' {
+				t.MoveTo(cell.X, cell.Y)
+				return true
+			}
+		}
 	}
-
-	// for case: #
-	//			    ^
-	//		     #	|
-	//			 #  |
-	for !IsValid(a, b) {
-		a--
-	}
-
-	t.MoveTo(a, b)
-	return true
+	return false
 }
 
 func randPosition() (int, int) {

@@ -9,6 +9,14 @@ import (
 	"github.com/muesli/termenv"
 )
 
+type Difficulty int
+
+const (
+	Easy Difficulty = iota
+	Medium
+	Hard
+)
+
 const (
 	Faint = iota
 	White
@@ -31,11 +39,16 @@ const (
 	PlayerPortrait = 'P'
 	GhostPortrait  = 'G'
 
-	Win        = 1
-	Lost       = -1
-	Gaming     = 0
-	GhostSpeed = time.Second / 3 // 幽灵移动速度，time.Second / 3 代表每秒移动 3 步
+	Win    = 1
+	Lost   = -1
+	Gaming = 0
 )
+
+var DifficultyMap = map[Difficulty]time.Duration{
+	Easy:   time.Second,
+	Medium: 500 * time.Millisecond,
+	Hard:   250 * time.Millisecond,
+}
 
 func init() {
 	rand.Seed(time.Now().Unix())

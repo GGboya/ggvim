@@ -3,7 +3,7 @@ package game
 import (
 	"strings"
 
-	"github.com/A11Might/PacVim/pkg/util"
+	"github.com/GGboya/ggvim/pkg/util"
 	"github.com/beefsack/go-astar"
 )
 
